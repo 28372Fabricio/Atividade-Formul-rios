@@ -1,127 +1,113 @@
 import { useState } from 'react'
 import './App.css'
 
-function App() {
-  const [form, setForm] = useState({
-    nome: '',
-    email: '',
-    senha: '',
-    genero: '',
-    mensagem: '',
-    aceitaTermos: false,
-  })
+function CampoTexto(props) {
+  return (
+    <label className="campo">
+      {props.label}
+      <input
+        type={props.type}
+        name={props.name}
+        value={props.value}
+        onChange={props.onChange}
+        placeholder={props.placeholder}
+      />
+    </label>
+  )
+}
 
-  const [erro, setErro] = useState('')
-  const [dados, setDados] = useState(null)
+function Livro(props) {
+  return (
+    <li className="livro-item">
+      {props.livro.titulo} — {props.livro.autor} — {props.livro.anoPublicacao} — {props.livro.genero}
+    </li>
+  )
+}
 
-  function handleChange(event) {
-    const { name, value, type, checked } = event.target
-
-    setForm((prevForm) => ({
-      ...prevForm,
-      [name]: type === 'checkbox' ? checked : value,
-    }))
-  }
+function FormularioLivro() {
+  const [titulo, setTitulo] = useState('')
+  const [autor, setAutor] = useState('')
+  const [anoPublicacao, setAnoPublicacao] = useState('')
+  const [genero, setGenero] = useState('')
+  const [livros, setLivros] = useState([])
 
   function handleSubmit(event) {
     event.preventDefault()
 
-    if (!form.nome || !form.email || !form.senha || !form.aceitaTermos) {
-      setErro('Preencha todos os campos obrigatórios e aceite os termos.')
-      setDados(null)
-      return
+    const livro = {
+      id: Date.now(),
+      titulo,
+      autor,
+      anoPublicacao,
+      genero,
     }
 
-    setErro('')
-    setDados({
-      nome: form.nome,
-      email: form.email,
-      genero: form.genero || 'Não informado',
-      mensagem: form.mensagem || 'Sem mensagem',
-    })
+    setLivros((livrosAnteriores) => [...livrosAnteriores, livro])
+    setTitulo('')
+    setAutor('')
+    setAnoPublicacao('')
+    setGenero('')
   }
 
   return (
     <main className="container">
-      <h1>Formulário</h1>
+      <h1>Cadastro de livros</h1>
 
       <form onSubmit={handleSubmit} className="formulario">
-        <label>
-          Nome:
-          <input
-            type="text"
-            name="nome"
-            value={form.nome}
-            onChange={handleChange}
-          />
-        </label>
+        <CampoTexto
+          label="Título"
+          name="titulo"
+          type="text"
+          value={titulo}
+          onChange={(event) => setTitulo(event.target.value)}
+          placeholder="O Senhor dos Anéis"
+        />
 
-        <label>
-          E-mail:
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-          />
-        </label>
+        <CampoTexto
+          label="Autor"
+          name="autor"
+          type="text"
+          value={autor}
+          onChange={(event) => setAutor(event.target.value)}
+          placeholder="J.R.R. Tolkien"
+        />
 
-        <label>
-          Senha:
-          <input
-            type="password"
-            name="senha"
-            value={form.senha}
-            onChange={handleChange}
-          />
-        </label>
+        <CampoTexto
+          label="Ano de publicação"
+          name="anoPublicacao"
+          type="text"
+          value={anoPublicacao}
+          onChange={(event) => setAnoPublicacao(event.target.value)}
+          placeholder="1954"
+        />
 
-        <label>
-          Gênero:
-          <select name="genero" value={form.genero} onChange={handleChange}>
-            <option value="">Selecione</option>
-            <option value="Masculino">Masculino</option>
-            <option value="Feminino">Feminino</option>
-            <option value="Outro">Outro</option>
-          </select>
-        </label>
+        <CampoTexto
+          label="Gênero"
+          name="genero"
+          type="text"
+          value={genero}
+          onChange={(event) => setGenero(event.target.value)}
+          placeholder="Fantasia"
+        />
 
-        <label>
-          Mensagem:
-          <textarea
-            name="mensagem"
-            value={form.mensagem}
-            onChange={handleChange}
-            rows="4"
-          />
-        </label>
-
-        <label className="checkbox">
-          <input
-            type="checkbox"
-            name="aceitaTermos"
-            checked={form.aceitaTermos}
-            onChange={handleChange}
-          />
-          Aceito os termos.
-        </label>
-
-        <button type="submit">Enviar</button>
+        <button type="submit">Cadastrar</button>
       </form>
 
-      {erro && <p className="erro">{erro}</p>}
-
-      {dados && (
-        <section className="resultado">
-          <h2>Dados enviados</h2>
-          <p>Nome: {dados.nome}</p>
-          <p>E-mail: {dados.email}</p>
-          <p>Gênero: {dados.genero}</p>
-          <p>Mensagem: {dados.mensagem}</p>
-        </section>
+      {livros.length === 0 ? (
+        <p className="mensagem-vazia">Nenhum livro cadastrado ainda.</p>
+      ) : (
+        <ul className="lista-livros">
+          {livros.map((livro) => (
+            <Livro key={livro.id} livro={livro} />
+          ))}
+        </ul>
       )}
     </main>
   )
+}
+
+function App() {
+  return <FormularioLivro />
 }
 
 export default App
