@@ -1,5 +1,8 @@
 # Atividade-Formul-rios
 
+<img width="1348" height="597" alt="Captura de tela 2026-09-22 200529" src="https://github.com/user-attachments/assets/7cdc422e-b08d-4c96-aacb-a3a778219b2a" />
+
+
 ## Como rodar o projeto
 
 1. Abra o terminal na pasta do projeto.
